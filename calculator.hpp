@@ -13,6 +13,9 @@ bool isValidDouble(const std::string &s);
 //convert valid double string into a double manually
 double parse_number(const std::string &s); 
 
+//split string into parts
+void split_parts(const std::string &s, std::string &sign, std::string &intPart, std::string &fracPart); 
+
 
 #endif // __CALCULATOR_HPP
 

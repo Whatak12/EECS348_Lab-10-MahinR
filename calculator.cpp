@@ -67,3 +67,34 @@ double parse_number(const std::string &s) {
     return result * sign;
 }
 
+void split_parts(const std::string &s, std::string &sign, std::string &intPart, std::string &fracPart) {
+    size_t i = 0;
+    sign = "+";
+    intPart = "";
+    fracPart = "";
+
+    //check sign
+    if (s[i] == '+' || s[i] == '-') {
+        sign = s.substr(i, 1);
+        i++;
+    }
+
+    //read integer part
+    while (i < s.size() && isdigit(s[i])) {
+        intPart += s[i];
+        i++;
+    }
+
+    //read fractional part
+    if (i < s.size() && s[i] == '.') {
+        i++;
+        while (i < s.size() && isdigit(s[i])) {
+            fracPart += s[i];
+            i++;
+        }
+    }
+
+    //if int or frac is empty, default to "0"
+    if (intPart.empty()) intPart = "0";
+    if (fracPart.empty()) fracPart = "0";
+}

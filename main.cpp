@@ -36,13 +36,18 @@ int main() {
         //slice trimmed string
         std::string trimmed = line.substr(first, last - first + 1);
 
-        //check if it's a valid double
         if (!isValidDouble(trimmed)) {
             std::cout << "  invalid number format.\n\n";
         } else {
             std::cout << "  valid number format.\n";
             double parsed = parse_number(trimmed);
-            std::cout << "  parsed value: " << parsed << "\n\n";
+            std::cout << "  parsed value: " << parsed << "\n";
+        
+            std::string sign, intPart, fracPart;
+            split_parts(trimmed, sign, intPart, fracPart);
+            std::cout << "  sign: " << sign << "\n";
+            std::cout << "  int : " << intPart << "\n";
+            std::cout << "  frac: " << fracPart << "\n\n";
         }
 
         caseNum++;
