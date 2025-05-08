@@ -100,6 +100,39 @@ void split_parts(const std::string &s, std::string &sign, std::string &intPart, 
     if (fracPart.empty()) fracPart = "0";
 }
 
+//compare magnitude of a.int + a.frac vs b.int + b.frac
+int compare_parts(const std::string &int1, const std::string &frac1,
+                  const std::string &int2, const std::string &frac2) {
+    if (int1.length() != int2.length())
+        return int1.length() > int2.length() ? 1 : -1;
+    if (int1 != int2)
+        return int1 > int2 ? 1 : -1;
+    if (frac1 != frac2)
+        return frac1 > frac2 ? 1 : -1;
+    return 0;
+}
+
+//subtract equal-length strings with borrow
+std::string subtract_parts(const std::string &a, const std::string &b, int &borrow) {
+    std::string result = "";
+    for (int i = a.length() - 1; i >= 0; --i) {
+        int d1 = a[i] - '0';
+        int d2 = b[i] - '0';
+        int diff = d1 - d2 - borrow;
+        if (diff < 0) {
+            diff += 10;
+            borrow = 1;
+        } else {
+            borrow = 0;
+        }
+        result += (diff + '0');
+    }
+    std::reverse(result.begin(), result.end());
+    return result;
+}
+
+
+
 //add two validated double strings with same or different signs
 std::string add_validated_strings(const std::string &a, const std::string &b) {
     std::string sign1, int1, frac1;
@@ -109,8 +142,51 @@ std::string add_validated_strings(const std::string &a, const std::string &b) {
     split_parts(a, sign1, int1, frac1);
     split_parts(b, sign2, int2, frac2);
 
-    //only support same sign for now
-    if (sign1 != sign2) return "error: mixed signs not supported";
+    //handle different signs by turning into subtraction
+    if (sign1 != sign2) {
+        int cmp = compare_parts(int1, frac1, int2, frac2);
+        std::string larger_int, larger_frac, smaller_int, smaller_frac, result_sign;
+
+        if (cmp == 0) return "0";
+
+        if (cmp > 0) {
+            result_sign = sign1;
+            larger_int = int1;
+            larger_frac = frac1;
+            smaller_int = int2;
+            smaller_frac = frac2;
+        } else {
+            result_sign = sign2;
+            larger_int = int2;
+            larger_frac = frac2;
+            smaller_int = int1;
+            smaller_frac = frac1;
+        }
+
+        //pad fractional parts
+        while (larger_frac.length() < smaller_frac.length()) larger_frac += '0';
+        while (smaller_frac.length() < larger_frac.length()) smaller_frac += '0';
+
+        //subtract fractional
+        int borrow = 0;
+        std::string frac_diff = subtract_parts(larger_frac, smaller_frac, borrow);
+
+        //pad integer parts
+        while (larger_int.length() < smaller_int.length()) larger_int = '0' + larger_int;
+        while (smaller_int.length() < larger_int.length()) smaller_int = '0' + smaller_int;
+
+        //subtract integer
+        std::string int_diff = subtract_parts(larger_int, smaller_int, borrow);
+
+        //remove leading/trailing zeros
+        while (int_diff.length() > 1 && int_diff[0] == '0') int_diff.erase(0, 1);
+        while (frac_diff.length() > 1 && frac_diff.back() == '0') frac_diff.pop_back();
+
+        std::string result = int_diff;
+        if (frac_diff != "0") result += "." + frac_diff;
+        if (result_sign == "-") result = "-" + result;
+        return result;
+    }
 
     //pad fractional parts
     while (frac1.length() < frac2.length()) frac1 += '0';
