@@ -2,39 +2,43 @@
 #include <cctype> //for isdigit
 #include <algorithm> //for reverse
 
-//check if a string is a valid double format
 bool isValidDouble(const std::string &s) {
-    int i = 0;
-    int n = s.size();
+    size_t i = 0;
+    size_t n = s.size();
     if (n == 0) return false;
 
-    //check optional + or - at beginning
+    //check optional + or -
     if (s[i] == '+' || s[i] == '-') {
         i++;
     }
 
+    //must start with at least one digit
     bool hasDigitsBeforeDot = false;
-
-    //consume digits before dot
     while (i < n && isdigit(s[i])) {
         hasDigitsBeforeDot = true;
         i++;
     }
 
+    //if no digits before dot, invalid
+    if (!hasDigitsBeforeDot) return false;
+
     bool hasDigitsAfterDot = false;
 
-    //if dot exists, consume digits after dot
+    //check for optional . and digits after it
     if (i < n && s[i] == '.') {
         i++;
         while (i < n && isdigit(s[i])) {
             hasDigitsAfterDot = true;
             i++;
         }
+        //if there's a dot, it must be followed by at least one digit
+        if (!hasDigitsAfterDot) return false;
     }
 
-    //must end at end of string and have at least one digit
-    return (hasDigitsBeforeDot || hasDigitsAfterDot) && (i == n);
+    //must consume whole string
+    return i == n;
 }
+
 
 double parse_number(const std::string &s) {
     double result = 0.0;
