@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "calculator.hpp" 
+#include "calculator.hpp"
 
 int main() {
     //get file name from user
@@ -16,34 +16,32 @@ int main() {
         return 1;
     }
 
-    //read in file and check if each line is a valid double
+    const std::string constant = "-123.456";
+
+    //read file and process each line
     std::string line;
     int caseNum = 1;
     while (std::getline(infile, line)) {
-        std::cout << "case#" << caseNum << ": " << line << "\n";
+        std::cout << "case #" << caseNum << ": " << line << "\n";
 
         //trim whitespace
         size_t first = line.find_first_not_of(" \t\r\n");
         size_t last = line.find_last_not_of(" \t\r\n");
 
-        //if all whitespace or empty, skip
+        //skip blank lines
         if (first == std::string::npos || last == std::string::npos) {
             std::cout << "  invalid number format.\n\n";
             caseNum++;
             continue;
         }
 
-        //slice trimmed string
         std::string trimmed = line.substr(first, last - first + 1);
 
+        //validate and process
         if (!isValidDouble(trimmed)) {
             std::cout << "  invalid number format.\n\n";
         } else {
-            std::cout << "  valid number format.\n";
-            double parsed = parse_number(trimmed);
-            std::cout << "  parsed value: " << parsed << "\n";
-        
-            std::string result = add_validated_strings(trimmed, "-123.456");
+            std::string result = add_validated_strings(trimmed, constant);
             std::cout << "  + (-123.456): " << result << "\n\n";
         }
 
