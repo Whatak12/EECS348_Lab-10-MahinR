@@ -37,7 +37,8 @@ bool isValidDouble(const std::string &s) {
 
 double parse_number(const std::string &s) {
     double result = 0.0;
-    int i = 0;
+    //use size_t to match s.size()
+    size_t i = 0; 
     int sign = 1;
 
     //handle optional sign
@@ -63,6 +64,6 @@ double parse_number(const std::string &s) {
         }
     }
 
-    //apply sign
     return result * sign;
 }
+
