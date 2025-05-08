@@ -1,6 +1,46 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype> //for isdigit
+
+//put all helper functions in calculator namespace
+namespace calculator {
+
+    //check if a string is a valid double format
+    bool isValidDouble(const std::string &s) {
+        int i = 0;
+        int n = s.size();
+        if (n == 0) return false;
+
+        //check optional + or - at the beginning
+        if (s[i] == '+' || s[i] == '-') {
+            i++;
+        }
+
+        bool hasDigitsBeforeDot = false;
+
+        //consume digits before dot
+        while (i < n && isdigit(s[i])) {
+            hasDigitsBeforeDot = true;
+            i++;
+        }
+
+        bool hasDigitsAfterDot = false;
+
+        //if dot exists, consume digits after dot
+        if (i < n && s[i] == '.') {
+            i++;
+            while (i < n && isdigit(s[i])) {
+                hasDigitsAfterDot = true;
+                i++;
+            }
+        }
+
+        //must end exactly at the end and have at least one digit
+        return (hasDigitsBeforeDot || hasDigitsAfterDot) && (i == n);
+    }
+
+}
 
 int main() {
     //get file name from user
@@ -8,20 +48,44 @@ int main() {
     std::cout << "Enter filename: ";
     std::cin >> filename;
 
-    //attempt to open file 
+    //attempt to open file
     std::ifstream infile(filename);
     if (!infile) {
-        std::cerr << "Error: could not open file.\n";
+        std::cerr << "error: could not open file.\n";
         return 1;
     }
-    //read in file and print out for testing
+
+    //read in file and check if each line is a valid double
     std::string line;
     int caseNum = 1;
     while (std::getline(infile, line)) {
-        std::cout << "Case #" << caseNum << ": " << line << "\n";
+        std::cout << "case #" << caseNum << ": " << line << "\n";
+
+        //trim whitespace
+        size_t first = line.find_first_not_of(" \t\r\n");
+        size_t last = line.find_last_not_of(" \t\r\n");
+
+        //if all whitespace or empty, skip
+        if (first == std::string::npos || last == std::string::npos) {
+            std::cout << "  invalid number format.\n\n";
+            caseNum++;
+            continue;
+        }
+
+        //slice trimmed string
+        std::string trimmed = line.substr(first, last - first + 1);
+
+        //validate using our function
+        if (!calculator::isValidDouble(trimmed)) {
+            std::cout << "  invalid number format.\n\n";
+        } else {
+            std::cout << "  valid number format.\n\n";
+        }
+
         caseNum++;
     }
 
+    //close file
     infile.close();
     return 0;
 }
