@@ -7,4 +7,9 @@
 // validated and thus throw no exceptions
 double parse_number(const std::string &expression);
 
+//check if string is a valid double format
+bool isValidDouble(const std::string &s); 
+
+
 #endif // __CALCULATOR_HPP
+

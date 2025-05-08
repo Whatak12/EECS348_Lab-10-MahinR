@@ -1,41 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cctype> //for isdigit
-
-//check if a string is a valid double format
-bool isValidDouble(const std::string &s) {
-    int i = 0;
-    int n = s.size();
-    if (n == 0) return false;
-
-    //check optional + or - at beginning
-    if (s[i] == '+' || s[i] == '-') {
-        i++;
-    }
-
-    bool hasDigitsBeforeDot = false;
-
-    //consume digits before dot
-    while (i < n && isdigit(s[i])) {
-        hasDigitsBeforeDot = true;
-        i++;
-    }
-
-    bool hasDigitsAfterDot = false;
-
-    //if dot exists, consume digits after dot
-    if (i < n && s[i] == '.') {
-        i++;
-        while (i < n && isdigit(s[i])) {
-            hasDigitsAfterDot = true;
-            i++;
-        }
-    }
-
-    //must end at end of string and have at least one digit
-    return (hasDigitsBeforeDot || hasDigitsAfterDot) && (i == n);
-}
+#include "calculator.hpp" //include our custom header
 
 int main() {
     //get file name from user
@@ -70,7 +36,7 @@ int main() {
         //slice trimmed string
         std::string trimmed = line.substr(first, last - first + 1);
 
-        //check if it’s a valid double
+        //check if it's a valid double
         if (!isValidDouble(trimmed)) {
             std::cout << "  invalid number format.\n\n";
         } else {
