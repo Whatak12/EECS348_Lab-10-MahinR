@@ -20,7 +20,7 @@ int main() {
     std::string line;
     int caseNum = 1;
     while (std::getline(infile, line)) {
-        std::cout << "case #" << caseNum << ": " << line << "\n";
+        std::cout << "case#" << caseNum << ": " << line << "\n";
 
         //trim whitespace
         size_t first = line.find_first_not_of(" \t\r\n");
