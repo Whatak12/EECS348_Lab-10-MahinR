@@ -34,3 +34,35 @@ bool isValidDouble(const std::string &s) {
     //must end at end of string and have at least one digit
     return (hasDigitsBeforeDot || hasDigitsAfterDot) && (i == n);
 }
+
+double parse_number(const std::string &s) {
+    double result = 0.0;
+    int i = 0;
+    int sign = 1;
+
+    //handle optional sign
+    if (s[i] == '+' || s[i] == '-') {
+        if (s[i] == '-') sign = -1;
+        i++;
+    }
+
+    //parse integer part
+    while (i < s.size() && isdigit(s[i])) {
+        result = result * 10 + (s[i] - '0');
+        i++;
+    }
+
+    //parse fractional part
+    if (i < s.size() && s[i] == '.') {
+        i++;
+        double divisor = 10.0;
+        while (i < s.size() && isdigit(s[i])) {
+            result += (s[i] - '0') / divisor;
+            divisor *= 10.0;
+            i++;
+        }
+    }
+
+    //apply sign
+    return result * sign;
+}

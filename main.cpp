@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "calculator.hpp" //include our custom header
+#include "calculator.hpp" 
 
 int main() {
     //get file name from user
@@ -40,7 +40,9 @@ int main() {
         if (!isValidDouble(trimmed)) {
             std::cout << "  invalid number format.\n\n";
         } else {
-            std::cout << "  valid number format.\n\n";
+            std::cout << "  valid number format.\n";
+            double parsed = parse_number(trimmed);
+            std::cout << "  parsed value: " << parsed << "\n\n";
         }
 
         caseNum++;
