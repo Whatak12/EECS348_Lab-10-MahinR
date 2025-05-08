@@ -3,43 +3,38 @@
 #include <string>
 #include <cctype> //for isdigit
 
-//put all helper functions in calculator namespace
-namespace calculator {
+//check if a string is a valid double format
+bool isValidDouble(const std::string &s) {
+    int i = 0;
+    int n = s.size();
+    if (n == 0) return false;
 
-    //check if a string is a valid double format
-    bool isValidDouble(const std::string &s) {
-        int i = 0;
-        int n = s.size();
-        if (n == 0) return false;
-
-        //check optional + or - at the beginning
-        if (s[i] == '+' || s[i] == '-') {
-            i++;
-        }
-
-        bool hasDigitsBeforeDot = false;
-
-        //consume digits before dot
-        while (i < n && isdigit(s[i])) {
-            hasDigitsBeforeDot = true;
-            i++;
-        }
-
-        bool hasDigitsAfterDot = false;
-
-        //if dot exists, consume digits after dot
-        if (i < n && s[i] == '.') {
-            i++;
-            while (i < n && isdigit(s[i])) {
-                hasDigitsAfterDot = true;
-                i++;
-            }
-        }
-
-        //must end exactly at the end and have at least one digit
-        return (hasDigitsBeforeDot || hasDigitsAfterDot) && (i == n);
+    //check optional + or - at beginning
+    if (s[i] == '+' || s[i] == '-') {
+        i++;
     }
 
+    bool hasDigitsBeforeDot = false;
+
+    //consume digits before dot
+    while (i < n && isdigit(s[i])) {
+        hasDigitsBeforeDot = true;
+        i++;
+    }
+
+    bool hasDigitsAfterDot = false;
+
+    //if dot exists, consume digits after dot
+    if (i < n && s[i] == '.') {
+        i++;
+        while (i < n && isdigit(s[i])) {
+            hasDigitsAfterDot = true;
+            i++;
+        }
+    }
+
+    //must end at end of string and have at least one digit
+    return (hasDigitsBeforeDot || hasDigitsAfterDot) && (i == n);
 }
 
 int main() {
@@ -75,8 +70,8 @@ int main() {
         //slice trimmed string
         std::string trimmed = line.substr(first, last - first + 1);
 
-        //validate using our function
-        if (!calculator::isValidDouble(trimmed)) {
+        //check if it’s a valid double
+        if (!isValidDouble(trimmed)) {
             std::cout << "  invalid number format.\n\n";
         } else {
             std::cout << "  valid number format.\n\n";
