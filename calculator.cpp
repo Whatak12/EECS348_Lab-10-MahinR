@@ -1,5 +1,6 @@
 #include "calculator.hpp"
 #include <cctype> //for isdigit
+#include <algorithm> //for reverse
 
 //check if a string is a valid double format
 bool isValidDouble(const std::string &s) {
@@ -97,4 +98,61 @@ void split_parts(const std::string &s, std::string &sign, std::string &intPart, 
     //if int or frac is empty, default to "0"
     if (intPart.empty()) intPart = "0";
     if (fracPart.empty()) fracPart = "0";
+}
+
+//add two validated double strings with same or different signs
+std::string add_validated_strings(const std::string &a, const std::string &b) {
+    std::string sign1, int1, frac1;
+    std::string sign2, int2, frac2;
+
+    //split both strings into parts
+    split_parts(a, sign1, int1, frac1);
+    split_parts(b, sign2, int2, frac2);
+
+    //only support same sign for now
+    if (sign1 != sign2) return "error: mixed signs not supported";
+
+    //pad fractional parts
+    while (frac1.length() < frac2.length()) frac1 += '0';
+    while (frac2.length() < frac1.length()) frac2 += '0';
+
+    //add fractional part
+    std::string frac_sum = "";
+    int carry = 0;
+    for (int i = frac1.length() - 1; i >= 0; --i) {
+        int digit = (frac1[i] - '0') + (frac2[i] - '0') + carry;
+        carry = digit / 10;
+        frac_sum += (digit % 10) + '0';
+    }
+    std::reverse(frac_sum.begin(), frac_sum.end());
+
+    //pad integer parts
+    while (int1.length() < int2.length()) int1 = '0' + int1;
+    while (int2.length() < int1.length()) int2 = '0' + int2;
+
+    //add integer part
+    std::string int_sum = "";
+    for (int i = int1.length() - 1; i >= 0; --i) {
+        int digit = (int1[i] - '0') + (int2[i] - '0') + carry;
+        carry = digit / 10;
+        int_sum += (digit % 10) + '0';
+    }
+    if (carry) int_sum += '1';
+    std::reverse(int_sum.begin(), int_sum.end());
+
+    //remove trailing zeros in fractional part
+    while (frac_sum.length() > 1 && frac_sum.back() == '0') {
+        frac_sum.pop_back();
+    }
+
+    //remove leading zeros in integer part
+    while (int_sum.length() > 1 && int_sum[0] == '0') {
+        int_sum.erase(0, 1);
+    }
+
+    std::string result = int_sum;
+    if (frac_sum != "0") result += "." + frac_sum;
+    if (sign1 == "-") result = "-" + result;
+
+    return result;
 }

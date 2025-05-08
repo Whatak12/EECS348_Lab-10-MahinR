@@ -43,11 +43,8 @@ int main() {
             double parsed = parse_number(trimmed);
             std::cout << "  parsed value: " << parsed << "\n";
         
-            std::string sign, intPart, fracPart;
-            split_parts(trimmed, sign, intPart, fracPart);
-            std::cout << "  sign: " << sign << "\n";
-            std::cout << "  int : " << intPart << "\n";
-            std::cout << "  frac: " << fracPart << "\n\n";
+            std::string result = add_validated_strings(trimmed, "-123.456");
+            std::cout << "  + (-123.456): " << result << "\n\n";
         }
 
         caseNum++;

@@ -16,6 +16,9 @@ double parse_number(const std::string &s);
 //split string into parts
 void split_parts(const std::string &s, std::string &sign, std::string &intPart, std::string &fracPart); 
 
+//add two validated double strings
+std::string add_validated_strings(const std::string &a, const std::string &b); 
+
 
 #endif // __CALCULATOR_HPP
 
